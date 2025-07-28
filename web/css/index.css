@@ -36,7 +36,7 @@ a {
 /* Hero Section */
 .hero-section {
   position: relative;
-  background: url('/web/image/bg_hardwere.jpg') center center/cover no-repeat;
+  background: url('../image/bg_hardwere.jpg') center center/cover no-repeat;
   height: 100vh;
   color: #fff;
   display: flex;
