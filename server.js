@@ -16,6 +16,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'web/html', 'index.html'));
 });
 
+// Fallback for SPA or direct route hits
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'web/html', 'index.html'));
+});
+
 // Example API route
 app.get('/api', (req, res) => {
   res.json({ message: 'API is working' });

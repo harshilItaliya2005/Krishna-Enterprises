@@ -101,10 +101,6 @@ a {
   margin: 0 auto;
 }
 
-.list-group-item {
-  font-size: 1.05rem;
-  transition: background 0.3s ease;
-}
 
 .list-group-item:hover {
   background-color: #f1f3f5;
