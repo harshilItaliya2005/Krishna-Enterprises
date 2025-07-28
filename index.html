@@ -119,10 +119,9 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
-          <img src="${cat.image}" alt="${cat.name}" class="product-image" />
-          <div class="product-info">
-            <h6>${cat.name}</h6>
-          </div>
+<div class="product-info">
+        <h6>${cat.name}</h6>
+      </div>
         `;
                 categoryList.appendChild(card);
             });
