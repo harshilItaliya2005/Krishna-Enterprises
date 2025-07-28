@@ -107,37 +107,41 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- ✅ Load Categories & Products -->
-     <script>
-    async function loadData() {
-      const categoryList = document.getElementById("category-list");
-      const productList = document.getElementById("product-list");
+    <script>
+        async function loadData() {
+            const categories = await fetch('categories.json').then(res => res.json());
+            const products = await fetch('products.json').then(res => res.json());
 
-      const categories = await fetch("categories.json").then(res => res.json());
-      const products = await fetch("products.json").then(res => res.json());
+            const categoryList = document.getElementById('category-list');
+            const productList = document.getElementById('product-list');
 
-      categories.forEach(cat => {
-        const div = document.createElement("div");
-        div.className = "card category-card p-2 text-center";
-        div.innerHTML = `
-          <img src="${cat.image}" alt="${cat.name}" class="img-fluid rounded mb-2">
-          <strong>${cat.name}</strong>
+            categories.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+          <img src="${cat.image}" alt="${cat.name}" class="product-image" />
+          <div class="product-info">
+            <h6>${cat.name}</h6>
+          </div>
         `;
-        categoryList.appendChild(div);
-      });
+                categoryList.appendChild(card);
+            });
 
-      products.forEach(prod => {
-        const div = document.createElement("div");
-        div.className = "card product-card p-2 text-center";
-        div.innerHTML = `
-          <img src="${prod.image}" alt="${prod.name}" class="img-fluid rounded mb-2">
-          <strong>${prod.name}</strong><br>
-          <span class="text-success">${prod.price}</span>
+            products.forEach(prod => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+          <img src="${prod.image}" alt="${prod.name}" class="product-image" />
+          <div class="product-info">
+            <h6>${prod.name}</h6>
+            <p class="text-muted">₹${prod.price}</p>
+          </div>
         `;
-        productList.appendChild(div);
-      });
-    }
+                productList.appendChild(card);
+            });
+        }
 
-    loadData();
+        loadData();
     </script>
 
 
