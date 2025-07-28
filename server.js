@@ -8,24 +8,23 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Serve static files (for web)
+// Serve static files
 app.use(express.static(path.join(__dirname, 'web')));
 
-// Serve HTML page (home)
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'web/html/index.html'));
-});
-
-// API Routes (e.g., product routes)
+// API routes
 const productRoutes = require('./routes/productRoutes');
 app.use('/api/products', productRoutes);
 
-// SPA fallback
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'web/html/index.html'));
+// Serve index.html for frontend (SPA fallback)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'web/html', 'index.html'));
 });
 
-// Start server
+// Catch-all fallback for SPA routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'web/html', 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
