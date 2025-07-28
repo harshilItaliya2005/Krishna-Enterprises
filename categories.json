@@ -2,36 +2,36 @@
   {
     "id": 0,
     "name": "S S HINGES",
-    "image": "/images/sshing.png"
+    "image": "https://res.cloudinary.com/desxahnbb/image/upload/v1753708100/sshing_puvw7r.png"
   },
   {
     "id": 1,
     "name": "ROSE HANDLE",
-    "image": "https://via.placeholder.com/150x100?text=Category+2"
+    "image": "https://res.cloudinary.com/desxahnbb/image/upload/v1753707991/Screenshot_2025-07-28_173354_pd9rnf.png"
   },
   {
     "id": 2,
     "name": "LOCK BODY & CYLINDER",
-    "image": "https://via.placeholder.com/150x100?text=Category+3"
+    "image": "https://res.cloudinary.com/desxahnbb/image/upload/v1753707991/Screenshot_2025-07-28_173408_rgprak.png"
   },
   {
     "id": 3,
     "name": "S S DOOR HANDLE",
-    "image": "https://via.placeholder.com/150x100?text=Category+4"
+    "image": "https://res.cloudinary.com/desxahnbb/image/upload/v1753707990/Screenshot_2025-07-28_173418_le7ebq.png"
   },
   {
     "id": 4,
     "name": "SS NOB",
-    "image": "https://via.placeholder.com/150x100?text=Category+5"
+    "image": "https://res.cloudinary.com/desxahnbb/image/upload/v1753707990/Screenshot_2025-07-28_173442_m67e9q.png"
   },
   {
     "id": 5,
     "name": "TRIYO",
-    "image": "https://via.placeholder.com/150x100?text=Category+6"
+    "image": "https://res.cloudinary.com/desxahnbb/image/upload/v1753707990/Screenshot_2025-07-28_173503_anuv6r.png"
   },
   {
     "id": 6,
     "name": "BATH ACCESSORIES",
-    "image": "https://via.placeholder.com/150x100?text=Category+7"
+    "image": "https://res.cloudinary.com/desxahnbb/image/upload/v1753707990/Screenshot_2025-07-28_173513_ctb6lw.png"
   }
 ]
