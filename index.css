@@ -87,6 +87,24 @@ a {
   transform: translateY(-2px);
 }
 
+
+/* Category Card Styling */
+.category-card {
+    width: 150px;
+    height: 150px;
+    background-color: #f8f9fa;
+    transition: transform 0.4s ease, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.category-card:hover {
+    transform: rotateY(10deg) rotateX(5deg) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+
+
 /* Product Section */
 #product-list-section {
   background: #fff;
@@ -100,6 +118,17 @@ a {
   max-width: 850px;
   margin: 0 auto;
 }
+
+/* Product Card 3D Animation */
+.product-card {
+    transition: transform 0.4s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: scale(1.02) translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
 
 
 .list-group-item:hover {
