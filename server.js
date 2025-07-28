@@ -1,27 +1,31 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const productRoutes = require('./routes/productRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// API Routes
-app.use('/api/products', productRoutes);
-
-// Static frontend
+// Serve static files (for web)
 app.use(express.static(path.join(__dirname, 'web')));
 
-// Serve index.html for frontend routes (SPA fallback)
+// Serve HTML page (home)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'web/html/index.html'));
+});
+
+// API Routes (e.g., product routes)
+const productRoutes = require('./routes/productRoutes');
+app.use('/api/products', productRoutes);
+
+// SPA fallback
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'web/html', 'index.html'));
+  res.sendFile(path.join(__dirname, 'web/html/index.html'));
 });
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
