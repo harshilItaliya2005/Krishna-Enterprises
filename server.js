@@ -1,15 +1,17 @@
 const express = require('express');
-const app = express();
 const path = require('path');
 
-// Serve static files from the 'web' folder
-app.use(express.static('web'));
+const app = express();
 
-// Fallback to index.html
+// ✅ Serve static files from "web" folder
+app.use(express.static(path.join(__dirname, 'web')));
+
+// ✅ Fallback to index.html for all routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'web', 'index.html'));
 });
 
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
