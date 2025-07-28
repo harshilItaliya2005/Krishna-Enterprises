@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Krishna Enterprises</title>
+
+
+    <!-- ✅ Favicon -->
+    <link rel="icon" href="/web/image/logo.png" type="image/x-icon" />
+
+    <!-- ✅ Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
+    <!-- ✅ Custom CSS -->
+    <link rel="stylesheet" href="/web/css/index.css" />
+</head>
+
+<body>
+
+    <!-- ✅ Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="/web/image/logo.png" alt="Logo" width="30" height="30" class="me-2">
+                Krishna Enterprises
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto"> <!-- Push items to the right -->
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Category</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ✅ Hero Section (Welcome UI) -->
+    <div class="hero-section d-flex align-items-center justify-content-center text-center text-white">
+        <div class="overlay"></div>
+        <div class="content z-2">
+            <h1 class="fw-bold mb-3">Your Hardware, One Click Away</h1>
+            <p class="lead">Browse and manage all hardware products in one dynamic dashboard</p>
+            <a href="#product-list-section" class="btn btn-outline-light btn-lg mt-4">Get Started</a>
+        </div>
+    </div>
+
+    <!-- Category Section -->
+    <section id="category-section" class="container my-5">
+        <h3 class="text-primary text-center mb-4">Browse by Category</h3>
+        <div id="category-list" class="d-flex flex-wrap justify-content-center gap-3"></div>
+    </section>
+
+    <!-- Product Section -->
+    <div id="product-list-section" class="container my-5">
+        <h2 class="text-primary text-center mb-4">Product List</h2>
+        <ul id="product-list" class="list-group"></ul>
+    </div>
+
+    <!-- ✅ Footer -->
+    <footer class="bg-dark text-white pt-4 pb-2">
+        <div class="container text-center text-md-start">
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <h5 class="fw-bold">Krishna Enterprises</h5>
+                    <p>Connecting users to the best hardware components with ease and speed.</p>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <h6 class="fw-semibold">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Home</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Category</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <h6 class="fw-semibold">Contact</h6>
+                    <p>Email: support@hardwareapi.com</p>
+                    <p>Phone: +91 88664 99337</p>
+                </div>
+
+                <div class="col-md-3 mb-3 text-center">
+                    <h6 class="fw-semibold">Follow Us</h6>
+                    <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white"><i class="bi bi-instagram"></i></a>
+                </div>
+
+            </div>
+            <hr class="border-secondary" />
+            <p class="text-center mb-0">&copy; 2025 Krishna Enterprises. All Rights Reserved.</p>
+
+        </div>
+    </footer>
+
+    <!-- ✅ Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
