@@ -142,6 +142,20 @@
         }
 
         loadData();
+
+        window.addEventListener("load", () => {
+            const wrapper = document.querySelector(".scroll-wrapper");
+            if (wrapper) wrapper.scrollLeft = 100; // scrolls a bit on load
+        });
+        const wrapper = document.querySelector('.scroll-wrapper');
+        let scrollAmount = 0;
+        setInterval(() => {
+            if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth) {
+                wrapper.scrollLeft = 0;
+            } else {
+                wrapper.scrollLeft += 2;
+            }
+        }, 30); // adjust speed
     </script>
 
 
