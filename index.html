@@ -62,7 +62,10 @@
 
     <!-- Category Section -->
     <section id="category-section" class="container my-5">
-        <h3 class="text-primary text-center mb-4">Browse by Category</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="text-black text-center mb-0">Browse by Category</h3>
+            <a href="category.html" class="btn btn-outline-primary btn-sm">View All</a>
+        </div>
         <div class="scroll-wrapper category-scroll">
             <div id="category-list" class="d-flex gap-3"></div>
         </div>
@@ -70,7 +73,7 @@
 
     <!-- Product Section -->
     <section id="product-section" class="container my-5">
-        <h3 class="text-primary text-center mb-4">Featured Products</h3>
+        <h3 class="text-black  text-center mb-4">Featured Products</h3>
         <div class="scroll-wrapper product-scroll">
             <div id="product-list" class="d-flex gap-3"></div>
         </div>
@@ -79,20 +82,20 @@
 
     <!-- Why Choose Us Section -->
     <section class="container my-5">
-        <h3 class="text-center text-primary mb-4" data-aos="fade-up">Why Choose Krishna Enterprises</h3>
+        <h3 class="text-center text-black  mb-4" data-aos="fade-up">Why Choose Krishna Enterprises</h3>
         <div class="row g-4">
             <div class="col-md-4 text-center" data-aos="fade-right">
-                <i class="bi bi-gear-fill display-4 text-primary mb-2"></i>
+                <i class="bi bi-gear-fill display-4 text-black  mb-2"></i>
                 <h5>Wide Product Range</h5>
                 <p>From bathroom fittings to advanced hardware, find everything under one roof.</p>
             </div>
             <div class="col-md-4 text-center" data-aos="fade-up">
-                <i class="bi bi-truck display-4 text-primary mb-2"></i>
+                <i class="bi bi-truck display-4 text-black  mb-2"></i>
                 <h5>Fast Delivery</h5>
                 <p>Quick and reliable delivery across all major cities in India.</p>
             </div>
             <div class="col-md-4 text-center" data-aos="fade-left">
-                <i class="bi bi-star-fill display-4 text-primary mb-2"></i>
+                <i class="bi bi-star-fill display-4 text-black  mb-2"></i>
                 <h5>Trusted Quality</h5>
                 <p>We only stock premium-grade hardware trusted by professionals.</p>
             </div>
@@ -143,10 +146,10 @@
 
     <!-- ✅ Load Categories & Products -->
     <script>
-          AOS.init({
-    duration: 800,
-    once: true
-  });
+        AOS.init({
+            duration: 800,
+            once: true
+        });
         async function loadData() {
             const categories = await fetch('categories.json').then(res => res.json());
             const products = await fetch('products.json').then(res => res.json());
@@ -154,16 +157,10 @@
             const categoryList = document.getElementById('category-list');
             const productList = document.getElementById('product-list');
 
-            // Generate category cards
+            // Generate category cards with IDs
             categories.forEach(cat => {
-                const card = createCategoryCard(cat.name);
+                const card = createCategoryCard(cat.id, cat.name);
                 categoryList.appendChild(card);
-            });
-
-            // Clone & append for loop effect
-            categories.forEach(cat => {
-                const card = createCategoryCard(cat.name);
-                categoryList.appendChild(card.cloneNode(true));
             });
 
             // Generate product cards
@@ -171,22 +168,22 @@
                 const card = createProductCard(prod.image, prod.name, prod.price);
                 productList.appendChild(card);
             });
-
-            // Clone & append for loop effect
-            products.forEach(prod => {
-                const card = createProductCard(prod.image, prod.name, prod.price);
-                productList.appendChild(card.cloneNode(true));
-            });
         }
 
-        function createCategoryCard(name) {
+        function createCategoryCard(id, name) {
             const card = document.createElement('div');
             card.className = 'category-card';
             card.innerHTML = `
-            <div class="category-info text-center">
-                <h6>${name}</h6>
-            </div>
-        `;
+        <div class="category-info text-center">
+            <h6>${name}</h6>
+        </div>
+    `;
+
+            // Add click event with category ID
+            card.addEventListener('click', () => {
+                window.location.href = `category.html?categoryId=${id}`;
+            });
+
             return card;
         }
 
@@ -194,16 +191,16 @@
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
-            <img src="${image}" alt="${name}" class="product-image" />
-            <div class="product-info text-center">
-                <h6>${name}</h6>
-                <p class="text-muted">₹${price}</p>
-            </div>
-        `;
+      <img src="${image}" alt="${name}" class="product-image" />
+      <div class="product-info text-center">
+        <h6>${name}</h6>
+        <p class="text-muted">₹${price}</p>
+      </div>
+    `;
             return card;
         }
 
-        function autoScrollLoop(wrapperSelector, speed = 2, pauseDelay = 2000) {
+        function autoScrollLoop(wrapperSelector, speed = 1, pauseDelay = 2500) {
             const wrapper = document.querySelector(wrapperSelector);
             if (!wrapper) return;
 
@@ -212,16 +209,15 @@
 
             function updateInteractionTime() {
                 lastInteractionTime = Date.now();
+                isUserScrolling = true;
             }
 
-            // Pause/resume logic for mobile & desktop
+            // Detect user interaction
             ['touchstart', 'touchmove', 'touchend', 'mousedown', 'mouseup', 'wheel'].forEach(event => {
-                wrapper.addEventListener(event, () => {
-                    isUserScrolling = true;
-                    updateInteractionTime();
-                });
+                wrapper.addEventListener(event, updateInteractionTime);
             });
 
+            // Auto-scroll loop
             setInterval(() => {
                 const now = Date.now();
 
@@ -230,13 +226,14 @@
                 }
 
                 if (!isUserScrolling) {
-                    if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 1) {
-                        wrapper.scrollLeft = 0;
+                    // Smooth loop
+                    if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 2) {
+                        wrapper.scrollTo({ left: 0, behavior: 'smooth' });
                     } else {
                         wrapper.scrollLeft += speed;
                     }
                 }
-            }, 30);
+            }, 20);
         }
 
         window.addEventListener("load", () => {
@@ -245,6 +242,7 @@
             });
         });
     </script>
+
 
 
 </body>
