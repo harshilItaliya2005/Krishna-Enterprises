@@ -4,6 +4,10 @@
   scroll-behavior: smooth;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: #dcd3d3;
   font-family: 'Segoe UI', 'Roboto', sans-serif;
@@ -109,23 +113,26 @@ a {
 .scroll-wrapper::-webkit-scrollbar {
   display: none;
 }
+
 .scroll-wrapper::-webkit-scrollbar-thumb {
   background-color: #aaa;
   border-radius: 4px;
 }
 
-.category-scroll, .product-scroll {
+.category-scroll,
+.product-scroll {
   display: flex;
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch; /* Required for iOS/Android smooth scroll */
+  -webkit-overflow-scrolling: touch;
+  /* Required for iOS/Android smooth scroll */
 }
 
 
 /* Card style for categories */
 .category-card {
- min-width: 160px;
+  min-width: 160px;
   max-width: 160px;
   height: 100px;
   background-color: #ffffff;
@@ -136,14 +143,15 @@ a {
   align-items: center;
   justify-content: center;
   text-align: center;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .category-card h6 {
   margin: 0;
   font-size: 18px;
   color: #333;
-} 
+}
+
 .category-info {
   width: 100%;
   display: flex;
@@ -178,7 +186,7 @@ a {
   border-radius: 10px;
   overflow: hidden;
   padding: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -187,6 +195,7 @@ a {
   transform: scale(1.05);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
+
 .product-image {
   width: 100%;
   height: 150px;
