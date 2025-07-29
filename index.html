@@ -215,8 +215,8 @@
                 updateContactInfo(cleanContact);
                 renderCategories(categories);
                 renderProducts(products, cleanContact);
-                initAutoScroll();
                 updateFooter(cleanContact);
+                  initAutoScroll();
             } catch (error) {
                 console.error("Data loading error:", error);
                 handleLoadingError(error);
@@ -250,30 +250,34 @@
             return number.toString().replace(/\D/g, '').replace(/^0+/, '');
         }
 
-        function updateContactInfo(contact) {
-            document.querySelectorAll('[data-whatsapp]').forEach(element => {
-                const isProduct = element.hasAttribute('data-product');
-                const message = isProduct
-                    ? CONFIG.WHATSAPP_MESSAGE.PRODUCT
-                        .replace('{product}', element.getAttribute('data-product') || 'product')
-                        .replace('{price}', element.getAttribute('data-price') || '')
-                    : CONFIG.WHATSAPP_MESSAGE.DEFAULT;
+       function updateContactInfo(contact) {
+    document.querySelectorAll('[data-whatsapp]').forEach(element => {
+        const isProduct = element.hasAttribute('data-product');
+        let message;
 
-                const whatsappURL = `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(message)}`;
-                console.log("Generated WhatsApp URL:", whatsappURL); // Debug log
-
-                element.setAttribute('href', whatsappURL);
-
-                // Force open in new tab with fallback
-                element.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    trackWhatsAppClick(isProduct ? 'product' : 'general');
-                    window.open(whatsappURL, '_blank');
-                });
-            });
-
-            renderWhatsAppSection(contact);
+        if (isProduct) {
+            const productName = element.getAttribute('data-product') || 'product';
+            const price = element.getAttribute('data-price') || '';
+            message = CONFIG.WHATSAPP_MESSAGE.PRODUCT
+                .replace('{product}', productName)
+                .replace('{price}', price);
+        } else {
+            message = CONFIG.WHATSAPP_MESSAGE.DEFAULT;
         }
+
+        const whatsappURL = `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(message)}`;
+
+        element.setAttribute('href', whatsappURL);
+
+        element.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.open(whatsappURL, '_blank');
+        });
+    });
+
+    renderWhatsAppSection(contact);
+}
+
 
         function trackWhatsAppClick(type) {
             console.log(`WhatsApp ${type} inquiry initiated`);
