@@ -169,7 +169,7 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const categoryId = urlParams.has('categoryId') ? parseInt(urlParams.get('categoryId')) : null;
 
-                // Load all required data including contact info
+                // Load all required data
                 const [categories, products, contact] = await Promise.all([
                     fetch('categories.json').then(res => {
                         if (!res.ok) throw new Error('Failed to load categories');
@@ -182,110 +182,154 @@
                     fetch('contact.json').then(res => {
                         if (!res.ok) throw new Error('Failed to load contact info');
                         return res.json();
-                    }).catch(() => {
-                        // Fallback contact info if contact.json fails
-                        return {
-                            whatsapp: "918866499337",
-                            phone: "+91 88664 99337",
-                            email: "support@krishnaenterprises.com"
-                        };
-                    })
+                    }).catch(() => ({
+                        whatsapp: "918866499337", // Fallback number
+                        phone: "+91 88664 99337",
+                        email: "support@krishnaenterprises.com"
+                    }))
                 ]);
 
-                // Find the category if viewing a specific category
-                let category = null;
-                if (categoryId !== null) {
-                    category = categories.find(c => c.id === categoryId);
-                }
-
-                // Update page title
-                if (category) {
-                    document.getElementById('category-title').textContent = `${category.name.toUpperCase()} PRODUCTS`;
-                    document.title = `${category.name} | Krishna Enterprises`;
-                } else {
-                    document.getElementById('category-title').textContent = 'ALL PRODUCTS';
-                    document.title = 'All Products | Krishna Enterprises';
-                }
-
-                // Filter products if viewing a specific category
-                const filteredProducts = categoryId !== null
-                    ? products.filter(p => p.categoryId === categoryId)
-                    : products;
-
-                // Display products
-                const container = document.getElementById('category-products');
-
-                if (filteredProducts.length === 0) {
-                    container.innerHTML = `
-                <div class="col-12">
-                    <div class="alert alert-info text-center py-4">
-                        <i class="bi bi-info-circle-fill me-2"></i>
-                        No products found in this category.
-                    </div>
-                    <div class="text-center mt-3">
-                        <a href="https://wa.me/${contact.whatsapp}" 
-                           class="btn btn-success whatsapp-btn" 
-                           target="_blank">
-                            <i class="bi bi-whatsapp me-2"></i> Contact Us on WhatsApp
-                        </a>
-                    </div>
-                </div>
-            `;
-                } else {
-                    container.innerHTML = filteredProducts.map(product => {
-                        // Find the category for each product
-                        const productCategory = categories.find(c => c.id === product.categoryId);
-                        const categoryName = productCategory ? productCategory.name : 'PRODUCT';
-
-                        // Create WhatsApp inquiry message
-                        const message = `Hi, I'm interested in your product: ${product.name} (${product.price}). Could you please provide more details?`;
-                        const encodedMessage = encodeURIComponent(message);
-
-                        return `
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card h-100 product-card">
-                        <span class="category-badge">${categoryName.toUpperCase()}</span>
-                        <div class="product-img-container">
-                            <img src="${product.image}" class="product-img" alt="${product.name}">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">${product.name}</h5>
-                            <p class="card-text product-price">${product.price}</p>
-                            <a href="https://wa.me/${contact.whatsapp}?text=${encodedMessage}" 
-                               class="btn btn-success whatsapp-inquiry-btn mt-2" 
-                               target="_blank">
-                                <i class="bi bi-whatsapp me-1"></i> Inquire Now
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                `;
-                    }).join('');
-                }
+                // Process and display data
+                displayProducts(categories, products, categoryId, contact);
 
             } catch (error) {
-                console.error('Error loading data:', error);
-                document.getElementById('category-title').textContent = 'Error Loading Products';
-                document.getElementById('category-products').innerHTML = `
-            <div class="col-12">
-                <div class="alert alert-danger">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    Error loading products. Please try again later.
-                </div>
-                <div class="text-center mt-3">
-                    <a href="https://wa.me/918866499337" 
-                       class="btn btn-success whatsapp-btn" 
-                       target="_blank">
-                        <i class="bi bi-whatsapp me-2"></i> Contact Support
-                    </a>
-                </div>
-            </div>
-        `;
+                handleLoadingError(error);
             } finally {
                 // Hide loading spinner
                 document.getElementById('loading-spinner').style.display = 'none';
             }
         });
+
+        function displayProducts(categories, products, categoryId, contact) {
+            // Find category if viewing specific category
+            const category = categoryId !== null ? categories.find(c => c.id === categoryId) : null;
+
+            // Update page title
+            updatePageTitle(category);
+
+            // Filter products if needed
+            const filteredProducts = categoryId !== null
+                ? products.filter(p => p.categoryId === categoryId)
+                : products;
+
+            // Display products
+            renderProductCards(filteredProducts, categories, contact);
+        }
+
+        function updatePageTitle(category) {
+            const titleElement = document.getElementById('category-title');
+            if (category) {
+                titleElement.textContent = `${category.name.toUpperCase()} PRODUCTS`;
+                document.title = `${category.name} | Krishna Enterprises`;
+            } else {
+                titleElement.textContent = 'ALL PRODUCTS';
+                document.title = 'All Products | Krishna Enterprises';
+            }
+        }
+
+        function renderProductCards(products, categories, contact) {
+            const container = document.getElementById('category-products');
+
+            if (products.length === 0) {
+                container.innerHTML = createNoProductsMessage(contact);
+                return;
+            }
+
+            container.innerHTML = products.map(product => createProductCard(product, categories, contact)).join('');
+            initializeWhatsAppLinks();
+        }
+
+        function createProductCard(product, categories, contact) {
+            const productCategory = categories.find(c => c.id === product.categoryId);
+            const categoryName = productCategory ? productCategory.name : 'PRODUCT';
+            const whatsappLink = createWhatsAppLink(product, contact);
+
+            return `
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="card h-100 product-card">
+            <span class="category-badge">${categoryName.toUpperCase()}</span>
+            <div class="product-img-container">
+                <img src="${product.image}" class="product-img" alt="${product.name}">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title product-title">${product.name}</h5>
+                <p class="card-text product-price">${product.price}</p>
+                <a href="${whatsappLink}" 
+                   class="btn btn-success whatsapp-inquiry-btn mt-2" 
+                   target="_blank" rel="noopener noreferrer"
+                   data-product="${encodeURIComponent(product.name)}"
+                   data-price="${encodeURIComponent(product.price)}">
+                    <i class="bi bi-whatsapp me-1"></i> Inquire Now
+                </a>
+            </div>
+        </div>
+    </div>
+    `;
+        }
+
+
+        // Updated WhatsApp link generator
+        function createWhatsAppLink(product, contact) {
+            const cleanNumber = String(contact.whatsapp).replace(/\D/g, '');
+            const cleanMessage = `Hi, I'm interested in your product: ${product.name} (${product.price}). Could you please provide more details?`;
+            return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(cleanMessage)}`;
+        }
+
+
+        // Enhanced WhatsApp button click handler
+        function initializeWhatsAppLinks() {
+            document.querySelectorAll('.whatsapp-inquiry-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    const product = this.getAttribute('data-product');
+                    const price = this.getAttribute('data-price');
+                    const cleanNumber = "918866499337"; // Hardcoded fallback
+                    const message = `Hi, I'm interested in your product: ${decodeURIComponent(product)} (${decodeURIComponent(price)}). Could you please provide more details?`;
+                    window.open(`https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`, '_blank');
+                });
+            });
+        }
+
+        function createNoProductsMessage(contact) {
+            return `
+    <div class="col-12">
+        <div class="alert alert-info text-center py-4">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            No products found in this category.
+        </div>
+        <div class="text-center mt-3">
+            <a href="https://wa.me/${contact.whatsapp}" 
+               class="btn btn-success whatsapp-btn" 
+               target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-whatsapp me-2"></i> Contact Us on WhatsApp
+            </a>
+        </div>
+    </div>
+    `;
+        }
+
+        function handleLoadingError(error) {
+            console.error('Error loading data:', error);
+            const container = document.getElementById('category-products');
+
+            container.innerHTML = `
+    <div class="col-12">
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            Error loading products. Please try again later.
+        </div>
+        <div class="text-center mt-3">
+            <a href="https://wa.me/918866499337" 
+               class="btn btn-success whatsapp-btn" 
+               target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-whatsapp me-2"></i> Contact Support
+            </a>
+        </div>
+    </div>
+    `;
+
+            document.getElementById('category-title').textContent = 'Error Loading Products';
+        }
     </script>
 </body>
+
 </html>

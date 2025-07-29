@@ -91,8 +91,8 @@
                         <p class="lead mb-4">Chat with us on WhatsApp for quick support and inquiries</p>
                     </div>
                     <div data-aos="zoom-in" data-aos-delay="300">
-                        <a href="https://wa.me/918866499337" class="btn btn-success btn-lg whatsapp-btn"
-                            target="_blank">
+                        <a href="https://wa.me/918866499337?text=Hi%2C%20I%20need%20assistance%20with%20Krishna%20Enterprises.%20Can%20you%20help%20me%3F"
+                            class="btn btn-success btn-lg whatsapp-btn" target="_blank">
                             <i class="bi bi-whatsapp me-2"></i> Chat on WhatsApp
                             <span class="whatsapp-pulse"></span>
                         </a>
@@ -101,6 +101,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- Why Choose Us Section -->
     <section class="container my-5">
@@ -178,165 +179,221 @@
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 
     <!-- ✅ Load Categories & Products -->
+    <!-- ✅ Enhanced Data Loader with Robust WhatsApp Integration -->
     <script>
         // Initialize animations
-        AOS.init({
-            duration: 800,
-            once: true
-        });
+        AOS.init({ duration: 800, once: true });
 
-        // Main data loading function
+        const CONFIG = {
+            DEFAULT_WHATSAPP: "918866499337",
+            FALLBACK_CONTACT: {
+                whatsapp: "918866499337",
+                phone: "+91 88664 99337",
+                email: "support@krishnaenterprises.com",
+                company: "Krishna Enterprises",
+                tagline: "Quality hardware solutions",
+                owner: "Proprietor Name"
+            },
+            WHATSAPP_MESSAGE: {
+                DEFAULT: "Hi, I'm interested in your products. Could you please provide more details?",
+                PRODUCT: "Hi, I'm interested in {product} ({price}). Could you please provide more details?",
+                HELP: "Hi, I need assistance with Krishna Enterprises. Can you help me?"
+            }
+        };
+
         async function loadData() {
-            // Show loading states
             showLoadingStates();
-
             try {
-                // Load all required data
                 const [categories, products, contact] = await Promise.all([
-                    fetchData('categories.json'),
-                    fetchData('products.json'),
-                    fetchData('contact.json')
+                    safeFetch('categories.json'),
+                    safeFetch('products.json'),
+                    safeFetch('contact.json').catch(() => CONFIG.FALLBACK_CONTACT)
                 ]);
 
-                // Update contact information
-                updateContactInfo(contact);
+                const cleanContact = normalizeContact(contact || CONFIG.FALLBACK_CONTACT);
 
-                // Render categories and products
+                updateContactInfo(cleanContact);
                 renderCategories(categories);
-                renderProducts(products);
-
-                // Initialize auto-scrolling
+                renderProducts(products, cleanContact);
                 initAutoScroll();
-
+                updateFooter(cleanContact);
             } catch (error) {
+                console.error("Data loading error:", error);
                 handleLoadingError(error);
             }
         }
 
-        // Helper function to fetch data with error handling
-        async function fetchData(url) {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`Failed to load ${url}`);
+        async function safeFetch(url, timeout = 5000) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+            try {
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                clearTimeout(timeoutId);
+                throw error;
             }
-            return await response.json();
         }
 
-        // Show loading states for different sections
-        function showLoadingStates() {
-            // WhatsApp section loading
-            const whatsappSection = document.getElementById('go-whatsapp');
-            if (whatsappSection) {
-                whatsappSection.innerHTML = `
-                <div class="container text-center py-5">
-                    <div class="spinner-border text-success" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-3">Loading contact options...</p>
-                </div>
-            `;
-            }
-
-            // Products and categories loading states can be added here
+        function normalizeContact(contact) {
+            return {
+                ...CONFIG.FALLBACK_CONTACT,
+                ...contact,
+                whatsapp: cleanWhatsappNumber(contact?.whatsapp || CONFIG.DEFAULT_WHATSAPP)
+            };
         }
 
-        // Update contact information (WhatsApp, etc.)
+        function cleanWhatsappNumber(number) {
+            return number.toString().replace(/\D/g, '').replace(/^0+/, '');
+        }
+
         function updateContactInfo(contact) {
-            // Update WhatsApp links
-            document.querySelectorAll('[href^="https://wa.me/"]').forEach(link => {
-                link.href = `https://wa.me/${contact.whatsapp}`;
+            document.querySelectorAll('[data-whatsapp]').forEach(element => {
+                const isProduct = element.hasAttribute('data-product');
+                const message = isProduct
+                    ? CONFIG.WHATSAPP_MESSAGE.PRODUCT
+                        .replace('{product}', element.getAttribute('data-product') || 'product')
+                        .replace('{price}', element.getAttribute('data-price') || '')
+                    : CONFIG.WHATSAPP_MESSAGE.DEFAULT;
+
+                const whatsappURL = `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(message)}`;
+                console.log("Generated WhatsApp URL:", whatsappURL); // Debug log
+
+                element.setAttribute('href', whatsappURL);
+
+                // Force open in new tab with fallback
+                element.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    trackWhatsAppClick(isProduct ? 'product' : 'general');
+                    window.open(whatsappURL, '_blank');
+                });
             });
 
-            // Render WhatsApp section after data is loaded
-            const whatsappSection = document.getElementById('go-whatsapp');
-            if (whatsappSection) {
-                whatsappSection.innerHTML = `
-                <div class="container text-center">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-8">
-                            <div data-aos="fade-down" data-aos-delay="100">
-                                <h3 class="mb-4">Need Immediate Assistance?</h3>
-                            </div>
-                            <div data-aos="fade-up" data-aos-delay="200">
-                                <p class="lead mb-4">Chat with us on WhatsApp for quick support</p>
-                            </div>
-                            <div data-aos="zoom-in" data-aos-delay="300">
-                                <a href="https://wa.me/${contact.whatsapp}" class="btn btn-success btn-lg whatsapp-btn" target="_blank">
-                                    <i class="bi bi-whatsapp me-2"></i> Chat on WhatsApp
-                                    <span class="whatsapp-pulse"></span>
-                                </a>
-                            </div>
+            renderWhatsAppSection(contact);
+        }
+
+        function trackWhatsAppClick(type) {
+            console.log(`WhatsApp ${type} inquiry initiated`);
+        }
+
+        function renderWhatsAppSection(contact) {
+            const section = document.getElementById('go-whatsapp');
+            if (!section) return;
+
+            section.innerHTML = `
+            <div class="container text-center">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div data-aos="fade-down" data-aos-delay="100">
+                            <h3 class="mb-4">Need Immediate Assistance?</h3>
+                        </div>
+                        <div data-aos="fade-up" data-aos-delay="200">
+                            <p class="lead mb-4">Chat with us on WhatsApp for quick support</p>
+                        </div>
+                        <div data-aos="zoom-in" data-aos-delay="300">
+                            <a href="https://wa.me/${contact.whatsapp}" 
+                               class="btn btn-success btn-lg whatsapp-btn" 
+                               target="_blank"
+                               data-whatsapp>
+                                <i class="bi bi-whatsapp me-2"></i> Chat on WhatsApp
+                                <span class="whatsapp-pulse"></span>
+                            </a>
                         </div>
                     </div>
                 </div>
-            `;
-            }
+            </div>
+        `;
         }
 
-        // Render categories to the DOM
+        function showLoadingStates() {
+            const loadingHTML = `
+            <div class="container text-center py-5">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3">Loading content...</p>
+            </div>
+        `;
+
+            ['go-whatsapp', 'category-list', 'product-list'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = loadingHTML;
+            });
+        }
+
+        function handleLoadingError(error) {
+            console.error("Loading error:", error);
+
+            const errorHTML = `
+            <div class="container text-center py-5">
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Could not load content. Please try again later.
+                </div>
+                <a href="https://wa.me/${CONFIG.DEFAULT_WHATSAPP}" 
+                   class="btn btn-success mt-3" 
+                   target="_blank"
+                   data-whatsapp>
+                    <i class="bi bi-whatsapp me-2"></i> Contact Support
+                </a>
+            </div>
+        `;
+
+            ['go-whatsapp', 'category-list', 'product-list'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = errorHTML;
+            });
+        }
+
         function renderCategories(categories) {
-            const categoryList = document.getElementById('category-list');
-            if (!categoryList) return;
+            const container = document.getElementById('category-list');
+            if (!container || !categories) return;
 
-            categoryList.innerHTML = ''; // Clear existing content
-
-            categories.forEach(cat => {
-                const card = createCategoryCard(cat.id, cat.name);
-                categoryList.appendChild(card);
-            });
-        }
-
-        // Create individual category card
-        function createCategoryCard(id, name) {
-            const card = document.createElement('div');
-            card.className = 'category-card';
-            card.innerHTML = `
-            <div class="category-info text-center">
-                <h6>${name}</h6>
+            container.innerHTML = categories.map(cat => `
+            <div class="category-card" data-category-id="${cat.id}">
+                <div class="category-info text-center">
+                    <h6>${cat.name}</h6>
+                </div>
             </div>
-        `;
+        `).join('');
 
-            card.addEventListener('click', () => {
-                window.location.href = `category.html?categoryId=${id}`;
-            });
-
-            return card;
-        }
-
-        // Render products to the DOM
-        function renderProducts(products) {
-            const productList = document.getElementById('product-list');
-            if (!productList) return;
-
-            productList.innerHTML = ''; // Clear existing content
-
-            products.forEach(prod => {
-                const card = createProductCard(prod.image, prod.name, prod.price);
-                productList.appendChild(card);
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const categoryId = card.getAttribute('data-category-id');
+                    window.location.href = `category.html?categoryId=${categoryId}`;
+                });
             });
         }
 
-        // Create individual product card
-        function createProductCard(image, name, price) {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-            <img src="${image}" alt="${name}" class="product-image" />
-            <div class="product-info text-center">
-                <h6>${name}</h6>
-                <p class="text-muted">₹${price}</p>
+        function renderProducts(products, contact) {
+            const container = document.getElementById('product-list');
+            if (!container || !products) return;
+
+            container.innerHTML = products.map(prod => `
+            <div class="product-card">
+                <img src="${prod.image}" alt="${prod.name}" class="product-image" />
+                <div class="product-info text-center">
+                    <h6>${prod.name}</h6>
+                    <p class="text-muted">₹${prod.price}</p>
+                    <a href="#" class="btn btn-sm btn-success whatsapp-inquiry-btn"
+                       data-whatsapp
+                       data-product="${prod.name}"
+                       data-price="₹${prod.price}">
+                        <i class="bi bi-whatsapp me-1"></i> Inquire
+                    </a>
+                </div>
             </div>
-        `;
-            return card;
+        `).join('');
         }
 
-        // Initialize auto-scrolling for horizontal scrollable sections
         function initAutoScroll() {
             autoScrollLoop('.product-scroll');
             autoScrollLoop('.category-scroll');
         }
 
-        // Auto-scroll functionality
         function autoScrollLoop(wrapperSelector, speed = 1, pauseDelay = 2500) {
             const wrapper = document.querySelector(wrapperSelector);
             if (!wrapper) return;
@@ -353,7 +410,7 @@
                 wrapper.addEventListener(event, updateInteractionTime);
             });
 
-            const scrollInterval = setInterval(() => {
+            setInterval(() => {
                 const now = Date.now();
                 if (now - lastInteractionTime >= pauseDelay) {
                     isUserScrolling = false;
@@ -366,70 +423,40 @@
                     }
                 }
             }, 20);
-
-            // Cleanup on unmount if needed
-            return () => clearInterval(scrollInterval);
         }
 
-        // Error handling
-        function handleLoadingError(error) {
-            console.error('Error loading data:', error);
-
-            // Show error in WhatsApp section
-            const whatsappSection = document.getElementById('go-whatsapp');
-            if (whatsappSection) {
-                whatsappSection.innerHTML = `
-                <div class="container text-center py-5">
-                    <div class="alert alert-danger">
-                        Could not load contact options. Please try again later.
-                    </div>
-                    <a href="https://wa.me/918866499337" class="btn btn-success mt-3" target="_blank">
-                        <i class="bi bi-whatsapp me-2"></i> Try WhatsApp Anyway
-                    </a>
-                </div>
-            `;
-            }
-
-            // You can add more error handling for other sections here
-        }
-
-        // New function to update footer
         function updateFooter(contact) {
             if (!contact) return;
 
-            // Company Info
-            document.getElementById('footer-company-name').textContent = contact.company || 'Krishna Enterprises';
-            document.getElementById('footer-tagline').textContent = contact.tagline || 'Quality hardware solutions';
-            document.getElementById('footer-owner').textContent = `Proprietor: ${contact.owner || 'Owner Name'}`;
-            document.getElementById('footer-copyright').textContent = contact.company || 'Krishna Enterprises';
+            setElementText('footer-company-name', contact.company);
+            setElementText('footer-tagline', contact.tagline);
+            setElementText('footer-owner', `Proprietor: ${contact.owner}`);
+            setElementText('footer-email', contact.email);
+            setElementText('footer-phone', contact.phone);
+            setElementText('current-year', new Date().getFullYear());
 
-            // Contact Info
-            document.getElementById('footer-email').textContent = contact.email || 'support@example.com';
-            document.getElementById('footer-phone').textContent = contact.phone || '+91 XXXXX XXXXX';
-
-            // Social Links
             if (contact.social) {
-                const fbLink = document.getElementById('footer-facebook');
-                const igLink = document.getElementById('footer-instagram');
-
-                if (contact.social.facebook) fbLink.href = contact.social.facebook;
-                if (contact.social.instagram) igLink.href = contact.social.instagram;
+                setLinkHref('footer-facebook', contact.social.facebook);
+                setLinkHref('footer-instagram', contact.social.instagram);
             }
-
-            // Update current year
-            document.getElementById('current-year').textContent = new Date().getFullYear();
         }
 
-        // Initialize everything when the page loads
-        // Call loadData when page loads
-        window.addEventListener('load', () => {
+        function setElementText(id, text) {
+            const el = document.getElementById(id);
+            if (el && text) el.textContent = text;
+        }
+
+        function setLinkHref(id, url) {
+            const el = document.getElementById(id);
+            if (el && url) el.href = url;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
             loadData();
-            // Initialize animations if needed
-            if (typeof AOS !== 'undefined') {
-                AOS.init();
-            }
+            if (typeof AOS !== 'undefined') AOS.init();
         });
     </script>
+
 
 
 
