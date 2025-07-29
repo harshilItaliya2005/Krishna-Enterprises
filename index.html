@@ -4,6 +4,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="Krishna Enterprises - One-click access to all your hardware needs. Browse by category, view products, and get started today.">
+    <meta name="keywords"
+        content="hardware, Krishna Enterprises, bathroom fittings, door handles, SS hinges, locks, hardware shop online">
+    <meta name="robots" content="index, follow">
+    <meta name="google-site-verification" content="google573f2985ae9aa8ff.html" />
     <title>Krishna Enterprises</title>
 
 
@@ -109,84 +115,84 @@
 
     <!-- ✅ Load Categories & Products -->
     <script>
-         async function loadData() {
-        const categories = await fetch('categories.json').then(res => res.json());
-        const products = await fetch('products.json').then(res => res.json());
+        async function loadData() {
+            const categories = await fetch('categories.json').then(res => res.json());
+            const products = await fetch('products.json').then(res => res.json());
 
-        const categoryList = document.getElementById('category-list');
-        const productList = document.getElementById('product-list');
+            const categoryList = document.getElementById('category-list');
+            const productList = document.getElementById('product-list');
 
-        // Generate category cards
-        categories.forEach(cat => {
-            const card = createCategoryCard(cat.name);
-            categoryList.appendChild(card);
-        });
+            // Generate category cards
+            categories.forEach(cat => {
+                const card = createCategoryCard(cat.name);
+                categoryList.appendChild(card);
+            });
 
-        // Clone & append for loop effect
-        categories.forEach(cat => {
-            const card = createCategoryCard(cat.name);
-            categoryList.appendChild(card.cloneNode(true));
-        });
+            // Clone & append for loop effect
+            categories.forEach(cat => {
+                const card = createCategoryCard(cat.name);
+                categoryList.appendChild(card.cloneNode(true));
+            });
 
-        // Generate product cards
-        products.forEach(prod => {
-            const card = createProductCard(prod.image, prod.name, prod.price);
-            productList.appendChild(card);
-        });
+            // Generate product cards
+            products.forEach(prod => {
+                const card = createProductCard(prod.image, prod.name, prod.price);
+                productList.appendChild(card);
+            });
 
-        // Clone & append for loop effect
-        products.forEach(prod => {
-            const card = createProductCard(prod.image, prod.name, prod.price);
-            productList.appendChild(card.cloneNode(true));
-        });
-    }
+            // Clone & append for loop effect
+            products.forEach(prod => {
+                const card = createProductCard(prod.image, prod.name, prod.price);
+                productList.appendChild(card.cloneNode(true));
+            });
+        }
 
-    function createCategoryCard(name) {
-        const card = document.createElement('div');
-        card.className = 'category-card';
-        card.innerHTML = `
+        function createCategoryCard(name) {
+            const card = document.createElement('div');
+            card.className = 'category-card';
+            card.innerHTML = `
             <div class="category-info text-center">
                 <h6>${name}</h6>
             </div>
         `;
-        return card;
-    }
+            return card;
+        }
 
-    function createProductCard(image, name, price) {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
+        function createProductCard(image, name, price) {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
             <img src="${image}" alt="${name}" class="product-image" />
             <div class="product-info text-center">
                 <h6>${name}</h6>
                 <p class="text-muted">₹${price}</p>
             </div>
         `;
-        return card;
-    }
+            return card;
+        }
 
-    function autoScrollLoop(wrapperSelector, speed = 2) {
-        const wrapper = document.querySelector(wrapperSelector);
-        if (!wrapper) return;
+        function autoScrollLoop(wrapperSelector, speed = 2) {
+            const wrapper = document.querySelector(wrapperSelector);
+            if (!wrapper) return;
 
-        let scrollAmount = 0;
+            let scrollAmount = 0;
 
-        setInterval(() => {
-            if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 1) {
-                // Reset to start for looping
-                wrapper.scrollLeft = 0;
-            } else {
-                wrapper.scrollLeft += speed;
-            }
-        }, 30);
-    }
+            setInterval(() => {
+                if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 1) {
+                    // Reset to start for looping
+                    wrapper.scrollLeft = 0;
+                } else {
+                    wrapper.scrollLeft += speed;
+                }
+            }, 30);
+        }
 
-    window.addEventListener("load", () => {
-        loadData().then(() => {
-            autoScrollLoop('.category-scroll');
-            autoScrollLoop('.product-scroll');
+        window.addEventListener("load", () => {
+            loadData().then(() => {
+                autoScrollLoop('.category-scroll');
+                autoScrollLoop('.product-scroll');
+            });
         });
-    });
     </script>
 
 
