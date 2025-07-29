@@ -98,8 +98,8 @@ a {
   display: flex;
   overflow-x: auto;
   gap: 10px;
-  scroll-behavior: smooth;
   padding: 10px;
+  scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -107,9 +107,8 @@ a {
 
 
 .scroll-wrapper::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none;
 }
-
 .scroll-wrapper::-webkit-scrollbar-thumb {
   background-color: #aaa;
   border-radius: 4px;
@@ -117,18 +116,18 @@ a {
 
 /* Card style for categories */
 .category-card {
-   min-width: 160px;
+ min-width: 160px;
   max-width: 160px;
-  height: 100px; /* set a consistent height */
+  height: 100px;
   background-color: #ffffff;
   border-radius: 10px;
   overflow: hidden;
+  padding: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  padding: 10px;
 }
 
 .category-card h6 {
