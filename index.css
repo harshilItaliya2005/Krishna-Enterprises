@@ -114,6 +114,15 @@ a {
   border-radius: 4px;
 }
 
+.category-scroll, .product-scroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch; /* Required for iOS/Android smooth scroll */
+}
+
+
 /* Card style for categories */
 .category-card {
  min-width: 160px;

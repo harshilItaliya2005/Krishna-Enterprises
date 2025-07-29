@@ -170,25 +170,44 @@
             return card;
         }
 
-        function autoScrollLoop(wrapperSelector, speed = 2) {
+        function autoScrollLoop(wrapperSelector, speed = 2, pauseDelay = 2000) {
             const wrapper = document.querySelector(wrapperSelector);
             if (!wrapper) return;
 
-            let scrollAmount = 0;
+            let isUserScrolling = false;
+            let lastInteractionTime = Date.now();
+
+            function updateInteractionTime() {
+                lastInteractionTime = Date.now();
+            }
+
+            // Pause/resume logic for mobile & desktop
+            ['touchstart', 'touchmove', 'touchend', 'mousedown', 'mouseup', 'wheel'].forEach(event => {
+                wrapper.addEventListener(event, () => {
+                    isUserScrolling = true;
+                    updateInteractionTime();
+                });
+            });
 
             setInterval(() => {
-                if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 1) {
-                    // Reset to start for looping
-                    wrapper.scrollLeft = 0;
-                } else {
-                    wrapper.scrollLeft += speed;
+                const now = Date.now();
+
+                if (now - lastInteractionTime >= pauseDelay) {
+                    isUserScrolling = false;
+                }
+
+                if (!isUserScrolling) {
+                    if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 1) {
+                        wrapper.scrollLeft = 0;
+                    } else {
+                        wrapper.scrollLeft += speed;
+                    }
                 }
             }, 30);
         }
 
         window.addEventListener("load", () => {
             loadData().then(() => {
-                autoScrollLoop('.category-scroll');
                 autoScrollLoop('.product-scroll');
             });
         });
