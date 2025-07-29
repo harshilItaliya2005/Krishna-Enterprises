@@ -1,5 +1,11 @@
 {
-    "whatsapp": "918866499337",
+    "company": "Krishna Enterprises",
+    "owner": "Mr. Meet Vaghashiya",
+    "tagline": "Connecting users to the best hardware components with ease and speed",
+    "email": "enterpriskrishna3@gmail.com",
     "phone": "+91 88664 99337",
-    "email": "enterpriskrishna3@gmail.com"
+    "social": {
+        "facebook": "https://www.instagram.com/krishna_hardware_interio/?hl=en",
+        "instagram": "https://www.instagram.com/krishna_hardware_interio/?hl=en"
+    }
 }

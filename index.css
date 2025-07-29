@@ -101,6 +101,8 @@ a {
     background-color: #f8f9fa;
     border-top: 1px solid #e9ecef;
     border-bottom: 1px solid #e9ecef;
+      overflow: hidden;
+    position: relative;
 }
 
 .whatsapp-btn {
@@ -111,13 +113,69 @@ a {
     font-weight: 600;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease;
+    z-index: 1;
 }
 
 .whatsapp-btn:hover {
     background-color: #128C7E;
     border-color: #128C7E;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+       transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+}
+
+/* WhatsApp Pulse Animation */
+.whatsapp-pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    animation: pulse 2s infinite;
+    opacity: 0;
+    z-index: -1;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.4;
+    }
+    100% {
+        transform: scale(1.3);
+        opacity: 0;
+    }
+}
+
+/* Animation Delays */
+[data-aos="fade-down"] {
+    transform: translateY(-20px);
+    opacity: 0;
+    transition-property: transform, opacity;
+}
+
+[data-aos="fade-up"] {
+    transform: translateY(20px);
+    opacity: 0;
+    transition-property: transform, opacity;
+}
+
+[data-aos="zoom-in"] {
+    transform: scale(0.9);
+    opacity: 0;
+    transition-property: transform, opacity;
+}
+
+[data-aos].aos-animate {
+    opacity: 1;
+    transform: none;
 }
 
 .whatsapp-btn i {
@@ -327,6 +385,31 @@ a {
 }
 
 /* Footer */
+#dynamic-footer {
+    background: linear-gradient(135deg, #1e2a3a, #2c3e50);
+}
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+}
+.social-icon:hover {
+    background: var(--primary);
+    transform: translateY(-3px);
+}
+
+#business-hours {
+    background: rgba(255,255,255,0.1);
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
 .footer {
   background-color: #343a40;
   color: #f8f9fa;
