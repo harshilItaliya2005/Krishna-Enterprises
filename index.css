@@ -458,6 +458,18 @@ a {
   color: #ced4da;
 }
 
+.owner-info {
+    background: rgba(255,255,255,0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.owner-info i {
+    color: var(--primary);
+}
+
 /* Responsive Footer */
 @media (max-width: 768px) {
   .footer h5 {
