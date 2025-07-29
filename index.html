@@ -79,6 +79,20 @@
         </div>
     </section>
 
+    <!-- WhatsApp Contact Section -->
+    <section id="go-whatsapp" class="py-5 bg-light">
+        <div class="container text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-8" data-aos="zoom-in">
+                    <h3 class="mb-4">Need Immediate Assistance?</h3>
+                    <p class="lead mb-4">Chat with us on WhatsApp for quick support and inquiries</p>
+                    <a href="https://wa.me/918866499337" class="btn btn-success btn-lg whatsapp-btn" target="_blank">
+                        <i class="bi bi-whatsapp me-2"></i> Chat on WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Why Choose Us Section -->
     <section class="container my-5">
@@ -146,40 +160,54 @@
 
     <!-- ✅ Load Categories & Products -->
     <script>
-        AOS.init({
+          AOS.init({
             duration: 800,
             once: true
         });
+        
         async function loadData() {
-            const categories = await fetch('categories.json').then(res => res.json());
-            const products = await fetch('products.json').then(res => res.json());
+            try {
+                // Load all data first
+                const [categories, products, contact] = await Promise.all([
+                    fetch('categories.json').then(res => res.json()),
+                    fetch('products.json').then(res => res.json()),
+                    fetch('contact.json').then(res => res.json())
+                ]);
 
-            const categoryList = document.getElementById('category-list');
-            const productList = document.getElementById('product-list');
+                // Update WhatsApp links
+                document.querySelectorAll('[href^="https://wa.me/"]').forEach(link => {
+                    link.href = `https://wa.me/${contact.whatsapp}`;
+                });
 
-            // Generate category cards with IDs
-            categories.forEach(cat => {
-                const card = createCategoryCard(cat.id, cat.name);
-                categoryList.appendChild(card);
-            });
+                const categoryList = document.getElementById('category-list');
+                const productList = document.getElementById('product-list');
 
-            // Generate product cards
-            products.forEach(prod => {
-                const card = createProductCard(prod.image, prod.name, prod.price);
-                productList.appendChild(card);
-            });
+                // Generate category cards with IDs
+                categories.forEach(cat => {
+                    const card = createCategoryCard(cat.id, cat.name);
+                    categoryList.appendChild(card);
+                });
+
+                // Generate product cards
+                products.forEach(prod => {
+                    const card = createProductCard(prod.image, prod.name, prod.price);
+                    productList.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // You can add error display logic here if needed
+            }
         }
 
         function createCategoryCard(id, name) {
             const card = document.createElement('div');
             card.className = 'category-card';
             card.innerHTML = `
-        <div class="category-info text-center">
-            <h6>${name}</h6>
-        </div>
-    `;
+                <div class="category-info text-center">
+                    <h6>${name}</h6>
+                </div>
+            `;
 
-            // Add click event with category ID
             card.addEventListener('click', () => {
                 window.location.href = `category.html?categoryId=${id}`;
             });
@@ -191,12 +219,12 @@
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
-      <img src="${image}" alt="${name}" class="product-image" />
-      <div class="product-info text-center">
-        <h6>${name}</h6>
-        <p class="text-muted">₹${price}</p>
-      </div>
-    `;
+                <img src="${image}" alt="${name}" class="product-image" />
+                <div class="product-info text-center">
+                    <h6>${name}</h6>
+                    <p class="text-muted">₹${price}</p>
+                </div>
+            `;
             return card;
         }
 
@@ -212,21 +240,16 @@
                 isUserScrolling = true;
             }
 
-            // Detect user interaction
             ['touchstart', 'touchmove', 'touchend', 'mousedown', 'mouseup', 'wheel'].forEach(event => {
                 wrapper.addEventListener(event, updateInteractionTime);
             });
 
-            // Auto-scroll loop
             setInterval(() => {
                 const now = Date.now();
-
                 if (now - lastInteractionTime >= pauseDelay) {
                     isUserScrolling = false;
                 }
-
                 if (!isUserScrolling) {
-                    // Smooth loop
                     if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 2) {
                         wrapper.scrollTo({ left: 0, behavior: 'smooth' });
                     } else {
@@ -239,6 +262,7 @@
         window.addEventListener("load", () => {
             loadData().then(() => {
                 autoScrollLoop('.product-scroll');
+                autoScrollLoop('.category-scroll');
             });
         });
     </script>
